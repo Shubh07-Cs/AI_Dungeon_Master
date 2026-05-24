@@ -7,7 +7,7 @@
     "max": 54
   },
   "mana": {
-    "current": 27,
+    "current": 24,
     "max": 27
   },
   "armor_class": 12,
@@ -20,7 +20,7 @@
     "charisma": 8
   },
   "experience": {
-    "current": 225,
+    "current": 235,
     "next_level": 300
   },
   "status_effects": [],
@@ -31,5 +31,5 @@
     "Shadow Step"
   ],
   "kill_count": 0,
-  "turns_played": 16
+  "turns_played": 17
 }

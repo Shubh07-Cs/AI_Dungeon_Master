@@ -60,3 +60,4 @@ But the door is open. The Engine is watching. And the only way out of this story
 - **Turn 14**: Failed to thoroughly investigate Neon Crypts hidden passage
 - **Turn 15**: Defeated Corrupted Drone, gained 25 XP
 - **Turn 16**: Failed to attack obscured enemy
+- **Turn 17**: Aelias successfully casts an arcane spell, Mana -3
