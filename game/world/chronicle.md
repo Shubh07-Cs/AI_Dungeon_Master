@@ -55,3 +55,4 @@ But the door is open. The Engine is watching. And the only way out of this story
 - **Turn 9**: Aelias missed attacking the Glitch-Wraith 🎉 LEVEL UP!
 - **Turn 10**: Failed to defend against Glitch-Wraith's psychic assault, momentarily disoriented.
 - **Turn 11**: Aelias finds a moment of respite, removes 'Disoriented' status, partially restores Health and Mana
+- **Turn 12**: Defeated Glitch-Wraith with a critical hit, gained 45 XP and a Glitch-Core

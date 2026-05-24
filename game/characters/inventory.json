@@ -35,6 +35,13 @@
       "qty": 1,
       "description": "Etched with glowing circuitry and a skull motif",
       "type": "quest"
+    },
+    {
+      "id": "glitch_core",
+      "name": "Glitch-Core",
+      "qty": 1,
+      "description": "A pulsing fragment of corrupted data, shimmering with raw, unstable energy. Might be valuable or useful for arcane crafting.",
+      "type": "material"
     }
   ]
 }
