@@ -47,3 +47,4 @@ But the door is open. The Engine is watching. And the only way out of this story
 - **Turn 1**: Attempted to restore civilization through sheer will, discovered the scale of the task
 - **Turn 2**: Missed attack on Glitch-Horror
 - **Turn 3**: Discovered a hidden passage in the Neon Crypts.
+- **Turn 4**: Failed to cast arcane spell, spell output glitched
