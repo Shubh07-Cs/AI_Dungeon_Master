@@ -20,10 +20,12 @@
     "charisma": 8
   },
   "experience": {
-    "current": 105,
+    "current": 115,
     "next_level": 300
   },
-  "status_effects": [],
+  "status_effects": [
+    "Disoriented"
+  ],
   "current_location": "Neon Crypts — Sector 7 Hidden Passage",
   "alignment": "Neutral",
   "abilities": [
@@ -31,5 +33,5 @@
     "Shadow Step"
   ],
   "kill_count": 0,
-  "turns_played": 9
+  "turns_played": 10
 }
