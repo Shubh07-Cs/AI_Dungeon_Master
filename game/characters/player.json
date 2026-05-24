@@ -1,0 +1,35 @@
+{
+  "name": "Aelias",
+  "class": "Spellsword",
+  "level": 1,
+  "health": {
+    "current": 45,
+    "max": 45
+  },
+  "mana": {
+    "current": 20,
+    "max": 20
+  },
+  "armor_class": 12,
+  "stats": {
+    "strength": 12,
+    "dexterity": 15,
+    "intelligence": 14,
+    "constitution": 12,
+    "wisdom": 10,
+    "charisma": 8
+  },
+  "experience": {
+    "current": 10,
+    "next_level": 100
+  },
+  "status_effects": [],
+  "current_location": "Neon Crypts — Sector 7 Entrance",
+  "alignment": "Neutral",
+  "abilities": [
+    "Arcane Strike",
+    "Shadow Step"
+  ],
+  "kill_count": 0,
+  "turns_played": 1
+}

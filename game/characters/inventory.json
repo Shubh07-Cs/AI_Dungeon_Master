@@ -1,0 +1,40 @@
+{
+  "gold": 25,
+  "equipped": {
+    "weapon": {
+      "name": "Runic Vibro-Dagger",
+      "damage": "1d6+1",
+      "bonus": "+1 DEX",
+      "type": "melee"
+    },
+    "armor": {
+      "name": "Synth-Leather Jerkin",
+      "ac_bonus": 2,
+      "type": "light"
+    },
+    "accessory": null
+  },
+  "bag": [
+    {
+      "id": "health_potion",
+      "name": "Minor Elixir of Restoration",
+      "qty": 2,
+      "effect": "Restores 15 HP",
+      "type": "consumable"
+    },
+    {
+      "id": "mana_shard",
+      "name": "Fractured Mana Shard",
+      "qty": 1,
+      "effect": "Restores 10 Mana",
+      "type": "consumable"
+    },
+    {
+      "id": "crypt_key",
+      "name": "Corroded Sector Key",
+      "qty": 1,
+      "description": "Etched with glowing circuitry and a skull motif",
+      "type": "quest"
+    }
+  ]
+}
