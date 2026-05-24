@@ -52,3 +52,4 @@ But the door is open. The Engine is watching. And the only way out of this story
 - **Turn 6**: Attacked anomaly with Runic Vibro-Dagger, dealt 7 damage
 - **Turn 7**: Arcane spell failed, no mana spent
 - **Turn 8**: Aelias checks inventory in the Neon Crypts
+- **Turn 9**: Aelias missed attacking the Glitch-Wraith 🎉 LEVEL UP!
