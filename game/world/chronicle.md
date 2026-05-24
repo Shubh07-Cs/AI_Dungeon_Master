@@ -48,3 +48,4 @@ But the door is open. The Engine is watching. And the only way out of this story
 - **Turn 2**: Missed attack on Glitch-Horror
 - **Turn 3**: Discovered a hidden passage in the Neon Crypts.
 - **Turn 4**: Failed to cast arcane spell, spell output glitched
+- **Turn 5**: Aelias takes a defensive stance, anticipating a threat in the hidden passage.
