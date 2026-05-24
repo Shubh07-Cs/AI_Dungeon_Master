@@ -1,14 +1,14 @@
 {
   "name": "Aelias",
   "class": "Spellsword",
-  "level": 2,
+  "level": 3,
   "health": {
-    "current": 54,
-    "max": 54
+    "current": 63,
+    "max": 63
   },
   "mana": {
-    "current": 24,
-    "max": 27
+    "current": 34,
+    "max": 34
   },
   "armor_class": 12,
   "stats": {
@@ -20,8 +20,8 @@
     "charisma": 8
   },
   "experience": {
-    "current": 290,
-    "next_level": 300
+    "current": 300,
+    "next_level": 500
   },
   "status_effects": [],
   "current_location": "Neon Crypts — Sector 7 Hidden Passage",
@@ -31,5 +31,5 @@
     "Shadow Step"
   ],
   "kill_count": 0,
-  "turns_played": 20
+  "turns_played": 21
 }
