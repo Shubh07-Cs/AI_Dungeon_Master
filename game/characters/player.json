@@ -20,16 +20,16 @@
     "charisma": 8
   },
   "experience": {
-    "current": 20,
+    "current": 45,
     "next_level": 100
   },
   "status_effects": [],
-  "current_location": "Neon Crypts — Sector 7 Entrance",
+  "current_location": "Neon Crypts — Sector 7 Hidden Passage",
   "alignment": "Neutral",
   "abilities": [
     "Arcane Strike",
     "Shadow Step"
   ],
   "kill_count": 0,
-  "turns_played": 2
+  "turns_played": 3
 }
