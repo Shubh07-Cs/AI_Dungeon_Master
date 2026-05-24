@@ -45,3 +45,4 @@ But the door is open. The Engine is watching. And the only way out of this story
 *— Chronicle auto-initialized by the Chrono-Engine. All entries beyond this point are written in blood, data, and the choices of the one who carries the Key.*
 
 - **Turn 1**: Attempted to restore civilization through sheer will, discovered the scale of the task
+- **Turn 2**: Missed attack on Glitch-Horror
