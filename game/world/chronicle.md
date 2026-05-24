@@ -59,3 +59,4 @@ But the door is open. The Engine is watching. And the only way out of this story
 - **Turn 13**: Failed to discern details in the Neon Crypts — Sector 7 Hidden Passage
 - **Turn 14**: Failed to thoroughly investigate Neon Crypts hidden passage
 - **Turn 15**: Defeated Corrupted Drone, gained 25 XP
+- **Turn 16**: Failed to attack obscured enemy
