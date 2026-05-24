@@ -63,3 +63,4 @@ But the door is open. The Engine is watching. And the only way out of this story
 - **Turn 17**: Aelias successfully casts an arcane spell, Mana -3
 - **Turn 18**: Failed to hit Glitch-Wraith
 - **Turn 19**: Defeated Glitch-Automaton with a critical hit, gained 35 XP
+- **Turn 20**: Attacked Glitch-Wraith with Runic Vibro-Dagger, dealing 7 damage
