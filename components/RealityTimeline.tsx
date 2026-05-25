@@ -54,6 +54,8 @@ export default function RealityTimeline({
   const [branchName, setBranchName] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const [tooltipStats, setTooltipStats] = useState<any>(null);
+  
   // Auto-scroll to the rightmost (current) node on mount / timeline change
   useEffect(() => {
     if (scrollRef.current) {
@@ -61,9 +63,42 @@ export default function RealityTimeline({
     }
   }, [timeline]);
 
+  // Fetch player snapshot for the hovered node
+  useEffect(() => {
+    if (!tooltip) {
+      setTooltipStats(null);
+      return;
+    }
+    
+    // Serverless mode: might already have snapshot
+    if ((tooltip.entry as any).playerSnapshot) {
+      setTooltipStats((tooltip.entry as any).playerSnapshot);
+      return;
+    }
+
+    // Local mode: fetch from API
+    let isCancelled = false;
+    fetch(`/api/state/${tooltip.entry.hash}`)
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (!isCancelled && data?.player) {
+          setTooltipStats(data.player);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [tooltip]);
+
   const handleNodeClick = (entry: TimelineEntry) => {
     if (entry.isCurrent) return;
     setConfirmModal(entry);
+    
+    // Dispatch event to highlight log entry
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('highlight-log', { detail: entry.description }));
+    }
   };
 
   const handleConfirmTravel = () => {
@@ -190,9 +225,28 @@ export default function RealityTimeline({
               </span>
             </div>
             {tooltip.entry.isCurrent && (
-              <p className="text-[10px] text-[var(--color-arcane-light)] mt-1">
+              <p className="text-[10px] text-[var(--color-arcane-light)] mt-1 font-bold">
                 ◆ Current Reality
               </p>
+            )}
+            
+            {/* Hover Snapshot Data */}
+            {tooltipStats && (
+              <div className="mt-2 pt-2 border-t border-[var(--color-border)] text-[10px] font-mono flex flex-col gap-1 text-[var(--color-muted)]">
+                <div className="flex justify-between items-center">
+                  <span>Lv.{tooltipStats.level} {tooltipStats.class}</span>
+                  <span className="text-[var(--color-cyber-light)] truncate max-w-[120px]">{tooltipStats.current_location}</span>
+                </div>
+                <div className="flex items-center gap-3 mt-1">
+                  <span className="flex items-center gap-1">
+                    <span className="text-[var(--color-blood)]">♥</span> {tooltipStats.health.current}/{tooltipStats.health.max}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <span className="text-[var(--color-cyber)]">●</span> {tooltipStats.mana.current}/{tooltipStats.mana.max}
+                  </span>
+                  <span>AC {tooltipStats.armor_class}</span>
+                </div>
+              </div>
             )}
           </motion.div>
         )}

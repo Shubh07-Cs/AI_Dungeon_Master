@@ -5,7 +5,9 @@ import type { PlayerState, InventoryState, DiceRoll, TurnResult } from '@/lib/ga
 
 interface StoryEntry {
   id: string;
-  narration: string;
+  immersiveLore: string;
+  tacticalSummary: string;
+  engineAlert: string | null;
   mechanics?: TurnResult['mechanics'];
 }
 
@@ -25,12 +27,26 @@ export function useGameState() {
   const [player, setPlayer] = useState<PlayerState | null>(null);
   const [inventory, setInventory] = useState<InventoryState | null>(null);
   const [storyLog, setStoryLog] = useState<StoryEntry[]>([]);
+  const [uiMode, setUiMode] = useState<'tactical' | 'immersive'>('tactical');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastDiceRoll, setLastDiceRoll] = useState<DiceRoll | null>(null);
   const [isRolling, setIsRolling] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isServerless, setIsServerless] = useState<boolean | null>(null);
+
+  // Initialize uiMode from localStorage on mount
+  useEffect(() => {
+    const savedUiMode = localStorage.getItem('chronos_ui_mode');
+    if (savedUiMode === 'tactical' || savedUiMode === 'immersive') {
+      setUiMode(savedUiMode);
+    }
+  }, []);
+
+  const handleSetUiMode = useCallback((mode: 'tactical' | 'immersive') => {
+    setUiMode(mode);
+    localStorage.setItem('chronos_ui_mode', mode);
+  }, []);
 
   const fetchState = useCallback(async () => {
     try {
@@ -56,7 +72,7 @@ export function useGameState() {
           if (storedStoryLog) {
             setStoryLog(JSON.parse(storedStoryLog));
           } else {
-            const initialLog = [{ id: 'prologue', narration: data.chronicle }];
+            const initialLog: StoryEntry[] = [{ id: 'prologue', immersiveLore: data.chronicle, tacticalSummary: 'The Chronicle auto-initialized', engineAlert: '> Initialization complete.' }];
             setStoryLog(initialLog);
             localStorage.setItem('chronos_story_log', JSON.stringify(initialLog));
           }
@@ -65,7 +81,7 @@ export function useGameState() {
           setPlayer(data.player);
           setInventory(data.inventory);
           
-          const initialLog = [{ id: 'prologue', narration: data.chronicle }];
+          const initialLog: StoryEntry[] = [{ id: 'prologue', immersiveLore: data.chronicle, tacticalSummary: 'The Chronicle auto-initialized', engineAlert: '> Initialization complete.' }];
           setStoryLog(initialLog);
           
           localStorage.setItem('chronos_player', JSON.stringify(data.player));
@@ -147,7 +163,9 @@ export function useGameState() {
 
       const newStoryEntry: StoryEntry = {
         id: String(Date.now()),
-        narration: result.narration,
+        immersiveLore: result.immersiveLore,
+        tacticalSummary: result.tacticalSummary,
+        engineAlert: result.engineAlert,
         mechanics: result.mechanics,
       };
 
@@ -263,6 +281,8 @@ export function useGameState() {
     player,
     inventory,
     storyLog,
+    uiMode,
+    setUiMode: handleSetUiMode,
     isLoading,
     error,
     lastDiceRoll,
@@ -273,4 +293,3 @@ export function useGameState() {
     isServerless,
   };
 }
-

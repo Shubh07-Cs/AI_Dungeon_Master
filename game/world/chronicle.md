@@ -70,3 +70,9 @@ But the door is open. The Engine is watching. And the only way out of this story
 - **Turn 24**: Aelias speaks into the Crypts' silence, feeling the world respond.
 - **Turn 25**: Took a defensive stance in the Neon Crypts.
 - **Turn 26**: Aelias casts a spell, revealing hidden elements in Sector 7
+- **Turn 27**: Discovered a hidden compartment in the Sector 7 Hidden Passage
+- **Turn 28**: Failed to take defensive stance in Neon Crypts, feeling exposed.
+- **Turn 29**: Aelias attacks Glitch-Wraith with Runic Vibro-Dagger, dealing 6 damage.
+- **Turn 30**: Failed to find a safe spot for rest in the Neon Crypts.
+- **Turn 31**: Discovered subtle glyph pattern and hidden seam in the Neon Crypts.
+- **Turn 32**: Attacked Unseen Enemy with Runic Vibro-Dagger, missed.

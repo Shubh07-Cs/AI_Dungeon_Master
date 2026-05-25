@@ -20,6 +20,8 @@ export const INITIAL_PLAYER_STATE: PlayerState = {
   current_location: "Neon Crypts — Sector 7 Entrance",
   alignment: "Neutral",
   abilities: ["Arcane Strike", "Shadow Step"],
+  quests: [],
+  memory_fragments: [],
   kill_count: 0,
   turns_played: 0
 };

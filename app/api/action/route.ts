@@ -51,8 +51,10 @@ export async function POST(request: Request) {
     // Check if player is dead
     if (player.health.current <= 0) {
       return NextResponse.json({
-        narration: '[GAME OVER] Time-loop collapse detected. Your consciousness fractures across the timeline. Use Time Travel to restore a previous reality anchor.',
-        mechanics: { diceRoll: null, hpChange: 0, xpChange: 0, manaChange: 0, goldChange: 0, itemsGained: [], itemsLost: [], statusEffectsAdded: [], statusEffectsRemoved: [], locationChange: null, commitType: 'DEATH', commitDescription: 'Character is dead', levelUp: false },
+        immersiveLore: '[GAME OVER] Time-loop collapse detected. Your consciousness fractures across the timeline. Use Time Travel to restore a previous reality anchor.',
+        tacticalSummary: 'CRITICAL FAILURE: VITAL SIGNS LOST.',
+        engineAlert: '> System Purge Initiated.',
+        mechanics: { diceRoll: null, hpChange: 0, xpChange: 0, manaChange: 0, goldChange: 0, itemsGained: [], itemsLost: [], statusEffectsAdded: [], statusEffectsRemoved: [], locationChange: null, commitType: 'DEATH', commitDescription: 'Character is dead', levelUp: false, threatDetected: null, objective: null, memoryFragmentUnlocked: null },
         playerState: player,
         inventory,
         isGameOver: true,
@@ -164,10 +166,20 @@ export async function POST(request: Request) {
 
 
     // Build response
+    const immersiveLoreAppend = isGameOver
+      ? '\n\n[GAME OVER] Time-loop collapse detected. Initiating temporal recall... Use Time Travel to restore a previous reality anchor.'
+      : (levelUp ? `\n\n✨ **LEVEL UP!** You have reached Level ${player.level}! Your strength grows, your wounds mend, and new power courses through your veins.` : '');
+
+    if (narrationResult.memoryFragmentUnlocked) {
+      if (!player.memory_fragments) player.memory_fragments = [];
+      player.memory_fragments.push(narrationResult.memoryFragmentUnlocked);
+      if (!serverless) await writePlayerState(player);
+    }
+
     const result: TurnResult = {
-      narration: isGameOver
-        ? narrationResult.narration + '\n\n[GAME OVER] Time-loop collapse detected. Initiating temporal recall... Use Time Travel to restore a previous reality anchor.'
-        : narrationResult.narration + (levelUp ? `\n\n✨ **LEVEL UP!** You have reached Level ${player.level}! Your strength grows, your wounds mend, and new power courses through your veins.` : ''),
+      immersiveLore: narrationResult.immersiveLore + immersiveLoreAppend,
+      tacticalSummary: narrationResult.tacticalSummary,
+      engineAlert: narrationResult.engineAlert,
       mechanics: {
         diceRoll,
         hpChange: narrationResult.hpChange,
@@ -182,6 +194,9 @@ export async function POST(request: Request) {
         commitType,
         commitDescription: commitDesc,
         levelUp,
+        threatDetected: narrationResult.threatDetected,
+        objective: narrationResult.objective,
+        memoryFragmentUnlocked: narrationResult.memoryFragmentUnlocked,
       },
       playerState: player,
       inventory,

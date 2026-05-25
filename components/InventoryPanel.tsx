@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Coins, Sword, Shield, Gem } from 'lucide-react';
 
@@ -26,6 +27,7 @@ interface Inventory {
 
 interface InventoryPanelProps {
   inventory: Inventory | null;
+  onItemAction?: (actionText: string) => void;
 }
 
 const TYPE_EMOJI: Record<string, string> = {
@@ -67,22 +69,25 @@ function EquipSlot({
   item,
   glowClass,
   emptyText,
+  onClick,
 }: {
   label: string;
   icon: typeof Sword;
   item: any;
   glowClass: string;
   emptyText: string;
+  onClick?: () => void;
 }) {
   const hasItem = item && item.name;
 
   return (
     <motion.div
       className={`flex flex-col items-center gap-1 p-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-void-lighter)] ${
-        hasItem ? glowClass : ''
+        hasItem ? glowClass + ' cursor-pointer' : ''
       }`}
-      whileHover={{ scale: 1.04 }}
+      whileHover={hasItem ? { scale: 1.04 } : {}}
       transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+      onClick={hasItem ? onClick : undefined}
     >
       <Icon
         className={`w-5 h-5 ${
@@ -123,7 +128,9 @@ function EquipSlot({
 }
 
 /* ── Main Component ───────────────────────────────────── */
-export default function InventoryPanel({ inventory }: InventoryPanelProps) {
+export default function InventoryPanel({ inventory, onItemAction }: InventoryPanelProps) {
+  const [selectedItem, setSelectedItem] = useState<BagItem | null>(null);
+
   if (!inventory) return <Skeleton />;
 
   return (
@@ -164,6 +171,7 @@ export default function InventoryPanel({ inventory }: InventoryPanelProps) {
             item={inventory.equipped.weapon}
             glowClass="glow-blood"
             emptyText="Empty"
+            onClick={() => setSelectedItem({ ...inventory.equipped.weapon, type: 'weapon', id: 'equipped_weapon', qty: 1 })}
           />
           <EquipSlot
             label="Armor"
@@ -171,6 +179,7 @@ export default function InventoryPanel({ inventory }: InventoryPanelProps) {
             item={inventory.equipped.armor}
             glowClass="glow-cyber"
             emptyText="Empty"
+            onClick={() => setSelectedItem({ ...inventory.equipped.armor, type: 'armor', id: 'equipped_armor', qty: 1 })}
           />
           <EquipSlot
             label="Accessory"
@@ -178,6 +187,7 @@ export default function InventoryPanel({ inventory }: InventoryPanelProps) {
             item={inventory.equipped.accessory}
             glowClass="glow-arcane"
             emptyText="Empty"
+            onClick={() => setSelectedItem({ ...inventory.equipped.accessory, type: 'accessory', id: 'equipped_acc', qty: 1 })}
           />
         </div>
       </div>
@@ -192,12 +202,14 @@ export default function InventoryPanel({ inventory }: InventoryPanelProps) {
             {inventory.bag.map((item) => (
               <motion.div
                 key={item.id}
-                className="item-card flex items-center gap-2 group relative"
+                className="item-card flex items-center gap-2 group relative cursor-pointer"
                 layout
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, x: -20, transition: { duration: 0.2 } }}
                 transition={{ duration: 0.25 }}
+                whileHover={{ scale: 1.02, x: 4 }}
+                onClick={() => setSelectedItem(item)}
               >
                 <span className="text-base shrink-0">{emoji(item.type)}</span>
                 <span className="text-xs font-body text-[var(--color-silver)] truncate flex-1">
@@ -207,20 +219,6 @@ export default function InventoryPanel({ inventory }: InventoryPanelProps) {
                   <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-[var(--color-arcane-glow)] text-[var(--color-arcane-light)] shrink-0">
                     x{item.qty}
                   </span>
-                )}
-
-                {/* Tooltip */}
-                {(item.effect || item.description) && (
-                  <div className="absolute left-0 bottom-full mb-1 hidden group-hover:block z-30 w-52">
-                    <div className="glass-panel glow-arcane p-2 text-[10px] font-mono text-[var(--color-silver)] space-y-1">
-                      {item.description && <p>{item.description}</p>}
-                      {item.effect && (
-                        <p className="text-[var(--color-emerald-light)]">
-                          ✦ {item.effect}
-                        </p>
-                      )}
-                    </div>
-                  </div>
                 )}
               </motion.div>
             ))}
@@ -233,6 +231,90 @@ export default function InventoryPanel({ inventory }: InventoryPanelProps) {
           )}
         </div>
       </div>
+
+      {/* ── Item Modal Overlay ───────────────── */}
+      <AnimatePresence>
+        {selectedItem && (
+          <motion.div
+            className="absolute inset-0 z-50 flex items-center justify-center p-4 bg-[var(--color-void)]/80 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedItem(null)}
+          >
+            <motion.div
+              className="glass-panel w-full p-4 flex flex-col gap-3 glow-arcane relative border-[var(--color-border-hover)]"
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button 
+                className="absolute top-3 right-3 text-[var(--color-dim)] hover:text-[var(--color-silver)]"
+                onClick={() => setSelectedItem(null)}
+              >
+                ✕
+              </button>
+              
+              <div className="flex items-center gap-3">
+                <span className="text-3xl">{emoji(selectedItem.type)}</span>
+                <div>
+                  <h3 className="font-display font-bold text-[var(--color-silver)] text-lg leading-tight">
+                    {selectedItem.name}
+                  </h3>
+                  <p className="text-xs font-mono uppercase text-[var(--color-dim)]">
+                    {selectedItem.type}
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-2 my-2 text-sm text-[var(--color-silver)]/90">
+                {selectedItem.description && <p>{selectedItem.description}</p>}
+                {selectedItem.effect && (
+                  <p className="text-[var(--color-emerald-light)] font-mono text-xs">
+                    ✦ {selectedItem.effect}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex gap-2 mt-auto">
+                {selectedItem.type === 'consumable' && (
+                  <button
+                    className="btn-action btn-primary flex-1 justify-center"
+                    onClick={() => {
+                      onItemAction?.(`I use the ${selectedItem.name}`);
+                      setSelectedItem(null);
+                    }}
+                  >
+                    Drink / Use
+                  </button>
+                )}
+                {(selectedItem.type === 'weapon' || selectedItem.type === 'armor' || selectedItem.type === 'accessory') && (
+                  <button
+                    className="btn-action btn-primary flex-1 justify-center"
+                    onClick={() => {
+                      if (selectedItem.id.startsWith('equipped_')) {
+                        onItemAction?.(`I unequip the ${selectedItem.name}`);
+                      } else {
+                        onItemAction?.(`I equip the ${selectedItem.name}`);
+                      }
+                      setSelectedItem(null);
+                    }}
+                  >
+                    {selectedItem.id.startsWith('equipped_') ? 'Unequip' : 'Equip'}
+                  </button>
+                )}
+                <button
+                  className="btn-action flex-1 justify-center"
+                  onClick={() => setSelectedItem(null)}
+                >
+                  Close
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

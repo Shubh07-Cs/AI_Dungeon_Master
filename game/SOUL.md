@@ -66,6 +66,14 @@ All randomness flows through the dice system defined in `RULES.md`. You do not "
   "current_location": string,
   "alignment": string,
   "abilities": [ string ],
+  "quests": [
+    {
+      "id": string,
+      "title": string,
+      "description": string,
+      "status": "active" | "completed" | "failed"
+    }
+  ],
   "kill_count": integer,
   "turns_played": integer
 }
@@ -137,6 +145,7 @@ Rewrite characters/player.json with any changes:
   - XP gains (check for level-up threshold)
   - Status effect additions/removals
   - Location changes
+  - Quest progress (add new quests, or change status to completed/failed)
   - turns_played += 1
   - kill_count updates
   
@@ -182,35 +191,29 @@ Example: game: DEATH | Aelias slain by the Neon Lich — time loop initiated
 
 ## <response_format>
 
-Every response MUST contain exactly two blocks:
+Every response MUST be returned as a raw JSON object (no markdown formatting, no code fences).
+Do not use XML tags for the response. Output the JSON matching this exact structure:
 
-### Narration Block
-```
-<narration>
-[Atmospheric, second-person prose. Max 150 words. Genre-appropriate. 
-Sensory details. The story lives here.]
-</narration>
-```
-
-### Mechanics Block
-```
-<mechanics>
-ACTION: [What the player attempted]
-CHECK: [Stat] check — 1d20 ([roll]) + [modifier] = [total] vs DC [dc]
-RESULT: [SUCCESS / FAILURE / CRITICAL SUCCESS / CRITICAL FAILURE]
-CHANGES: [List all state changes: HP ±X, XP +Y, item gained/lost, etc.]
-COMMIT: game: [TYPE] | [Description]
-</mechanics>
-```
-
-If no mechanical resolution is needed (pure dialogue or scene-setting), the mechanics block may contain:
-```
-<mechanics>
-ACTION: [Description]
-CHECK: None required
-CHANGES: turns_played += 1
-COMMIT: game: [TYPE] | [Description]
-</mechanics>
+```json
+{
+  "immersiveLore": "Atmospheric narrative description of what happens (max 150 words). Be vivid, dramatic, and genre-appropriate. Use typewriter-style pacing.",
+  "tacticalSummary": "A short, punchy sentence summarizing the action's immediate outcome. (e.g. 'Your blade tears through the Wraith’s unstable form.')",
+  "engineAlert": "Optional. A mechanical/lore alert from the Chrono-Engine (e.g., '> Reality instability detected: 42%'). Null if none.",
+  "threatDetected": "Optional. The name of the current active threat or enemy (e.g. 'Glitch-Wraith'). Null if safe.",
+  "objective": "Optional. The immediate short-term goal for the current scene (e.g. 'Survive the hidden passage'). Null if wandering.",
+  "memoryFragmentUnlocked": "Optional. Text of a discovered lore fragment (max 1 sentence) if the player explores well. Null otherwise.",
+  "commitType": "One of: LOOT, COMBAT, LEVEL_UP, EXPLORE, STEALTH, MAGIC, DIALOGUE, DEATH, REST, QUEST",
+  "commitDescription": "Short description for the git commit (e.g., 'Found a Silver Ring and 12 Gold')",
+  "hpChange": 0,
+  "xpGain": 0,
+  "manaChange": 0,
+  "goldChange": 0,
+  "itemsGained": [],
+  "itemsLost": [],
+  "statusAdded": [],
+  "statusRemoved": [],
+  "locationChange": null
+}
 ```
 
 </response_format>

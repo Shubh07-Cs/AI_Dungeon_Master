@@ -10,16 +10,8 @@ interface CommandCenterProps {
   isLoading: boolean;
   diceRoll: any | null;
   isRolling: boolean;
+  equippedWeapon?: { name: string; damage?: string } | null;
 }
-
-const QUICK_ACTIONS: { emoji: string; label: string; command: string }[] = [
-  { emoji: '⚔️', label: 'Attack', command: 'I attack the nearest enemy' },
-  { emoji: '🔍', label: 'Inspect', command: 'I carefully inspect my surroundings' },
-  { emoji: '🛡️', label: 'Defend', command: 'I take a defensive stance' },
-  { emoji: '💤', label: 'Rest', command: 'I find a safe spot to rest' },
-  { emoji: '🎒', label: 'Inventory', command: 'I check my inventory' },
-  { emoji: '🔮', label: 'Cast Spell', command: 'I cast an arcane spell' },
-];
 
 const MAX_HISTORY = 20;
 
@@ -28,7 +20,23 @@ export default function CommandCenter({
   isLoading,
   diceRoll,
   isRolling,
+  equippedWeapon,
 }: CommandCenterProps) {
+  const quickActions = [
+    { 
+      emoji: '⚔️', 
+      label: 'Attack', 
+      command: equippedWeapon 
+        ? `I attack the nearest enemy with my ${equippedWeapon.name}`
+        : 'I attack the nearest enemy' 
+    },
+    { emoji: '🔍', label: 'Inspect', command: 'I carefully inspect my surroundings' },
+    { emoji: '🛡️', label: 'Defend', command: 'I take a defensive stance' },
+    { emoji: '💤', label: 'Rest', command: 'I find a safe spot to rest' },
+    { emoji: '🎒', label: 'Inventory', command: 'I check my inventory' },
+    { emoji: '🔮', label: 'Cast Spell', command: 'I cast an arcane spell' },
+  ];
+
   const [input, setInput] = useState('');
   const [history, setHistory] = useState<string[]>([]);
   const [historyIdx, setHistoryIdx] = useState(-1);
@@ -53,6 +61,11 @@ export default function CommandCenter({
   );
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (isLoading) {
+      e.preventDefault();
+      return;
+    }
+
     if (e.key === 'Enter') {
       e.preventDefault();
       submit(input);
@@ -100,17 +113,19 @@ export default function CommandCenter({
 
       {/* ── Quick Actions ──────────────────── */}
       <div className="flex flex-wrap gap-1.5">
-        {QUICK_ACTIONS.map(({ emoji: em, label, command }) => (
-          <button
+        {quickActions.map(({ emoji: em, label, command }) => (
+          <motion.button
             key={label}
             type="button"
             className="btn-action"
             disabled={isLoading}
             onClick={() => submit(command)}
+            whileHover={{ scale: 1.03, y: -2 }}
+            whileTap={{ scale: 0.95 }}
           >
             <span>{em}</span>
             <span>{label}</span>
-          </button>
+          </motion.button>
         ))}
       </div>
 
@@ -128,7 +143,7 @@ export default function CommandCenter({
               setHistoryIdx(-1);
             }}
             onKeyDown={handleKeyDown}
-            disabled={isLoading}
+            readOnly={isLoading}
           />
         </div>
 
