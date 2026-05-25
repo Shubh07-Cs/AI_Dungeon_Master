@@ -54,8 +54,8 @@ export default function GameDashboard() {
           // Only do this if we haven't already and the story log is empty
           if (data.chronicle && fullStoryLog.length === 0) {
              setFullStoryLog([{
-               id: 'prologue',
-               narration: data.chronicle,
+                id: 'prologue',
+                narration: data.chronicle,
              }]);
           }
         }
