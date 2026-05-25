@@ -66,6 +66,14 @@ All randomness flows through the dice system defined in `RULES.md`. You do not "
   "current_location": string,
   "alignment": string,
   "abilities": [ string ],
+  "quests": [
+    {
+      "id": string,
+      "title": string,
+      "description": string,
+      "status": "active" | "completed" | "failed"
+    }
+  ],
   "kill_count": integer,
   "turns_played": integer
 }
@@ -137,6 +145,7 @@ Rewrite characters/player.json with any changes:
   - XP gains (check for level-up threshold)
   - Status effect additions/removals
   - Location changes
+  - Quest progress (add new quests, or change status to completed/failed)
   - turns_played += 1
   - kill_count updates
   

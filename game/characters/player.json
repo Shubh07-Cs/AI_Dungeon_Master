@@ -20,7 +20,7 @@
     "charisma": 8
   },
   "experience": {
-    "current": 360,
+    "current": 375,
     "next_level": 500
   },
   "status_effects": [],
@@ -30,6 +30,14 @@
     "Arcane Strike",
     "Shadow Step"
   ],
+  "quests": [
+    {
+      "id": "q1",
+      "title": "Decrypt the Sector 7 Core",
+      "description": "Find the Corroded Sector Key and use it on the main terminal to extract the hidden data.",
+      "status": "active"
+    }
+  ],
   "kill_count": 0,
-  "turns_played": 26
+  "turns_played": 27
 }
