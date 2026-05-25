@@ -72,3 +72,4 @@ But the door is open. The Engine is watching. And the only way out of this story
 - **Turn 26**: Aelias casts a spell, revealing hidden elements in Sector 7
 - **Turn 27**: Discovered a hidden compartment in the Sector 7 Hidden Passage
 - **Turn 28**: Failed to take defensive stance in Neon Crypts, feeling exposed.
+- **Turn 29**: Aelias attacks Glitch-Wraith with Runic Vibro-Dagger, dealing 6 damage.

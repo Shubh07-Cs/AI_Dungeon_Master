@@ -20,7 +20,7 @@
     "charisma": 8
   },
   "experience": {
-    "current": 385,
+    "current": 395,
     "next_level": 500
   },
   "status_effects": [],
@@ -39,5 +39,5 @@
     }
   ],
   "kill_count": 0,
-  "turns_played": 28
+  "turns_played": 29
 }
