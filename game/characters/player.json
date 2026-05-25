@@ -20,7 +20,7 @@
     "charisma": 8
   },
   "experience": {
-    "current": 325,
+    "current": 335,
     "next_level": 500
   },
   "status_effects": [],
@@ -31,5 +31,5 @@
     "Shadow Step"
   ],
   "kill_count": 0,
-  "turns_played": 24
+  "turns_played": 25
 }
