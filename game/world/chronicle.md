@@ -74,3 +74,4 @@ But the door is open. The Engine is watching. And the only way out of this story
 - **Turn 28**: Failed to take defensive stance in Neon Crypts, feeling exposed.
 - **Turn 29**: Aelias attacks Glitch-Wraith with Runic Vibro-Dagger, dealing 6 damage.
 - **Turn 30**: Failed to find a safe spot for rest in the Neon Crypts.
+- **Turn 31**: Discovered subtle glyph pattern and hidden seam in the Neon Crypts.
