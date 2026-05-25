@@ -3,6 +3,11 @@ import path from 'path';
 
 const GAME_DIR = path.join(process.cwd(), process.env.GAME_DIR || 'game');
 
+export const isServerless = () => 
+  !!process.env.VERCEL || 
+  process.env.NEXT_PUBLIC_SERVERLESS === 'true';
+
+
 /* ─── Types ──────────────────────────────────────────── */
 
 export interface PlayerState {

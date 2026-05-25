@@ -12,13 +12,15 @@ import {
   PlayerState,
   InventoryState,
   TurnResult,
+  isServerless,
 } from '@/lib/game-engine';
 import { generateNarration } from '@/lib/gm-narrator';
 import { commitGameState } from '@/lib/git-manager';
+import { INITIAL_PLAYER_STATE, INITIAL_INVENTORY_STATE } from '@/lib/initial-state';
 
 export async function POST(request: Request) {
   try {
-    const { action } = await request.json();
+    const { action, playerState: clientPlayerState, inventoryState: clientInventoryState } = await request.json();
 
     if (!action || typeof action !== 'string') {
       return NextResponse.json({ error: 'Action is required' }, { status: 400 });
@@ -27,15 +29,24 @@ export async function POST(request: Request) {
     // Step 1: READ STATE
     let player: PlayerState;
     let inventory: InventoryState;
-    try {
-      player = await readPlayerState();
-      inventory = await readInventory();
-    } catch {
-      return NextResponse.json(
-        { error: 'Failed to read game state. Is the game initialized?' },
-        { status: 500 }
-      );
+    
+    const serverless = isServerless() || (!!clientPlayerState && !!clientInventoryState);
+
+    if (serverless) {
+      player = clientPlayerState || INITIAL_PLAYER_STATE;
+      inventory = clientInventoryState || INITIAL_INVENTORY_STATE;
+    } else {
+      try {
+        player = await readPlayerState();
+        inventory = await readInventory();
+      } catch {
+        return NextResponse.json(
+          { error: 'Failed to read game state. Is the game initialized?' },
+          { status: 500 }
+        );
+      }
     }
+
 
     // Check if player is dead
     if (player.health.current <= 0) {
@@ -133,21 +144,24 @@ export async function POST(request: Request) {
       player.health.current = 0;
     }
 
-    // Step 4b: WRITE STATE FILES
-    await writePlayerState(player);
-    await writeInventory(inventory);
-
-    // Append to chronicle
-    const chronicleEntry = `- **Turn ${player.turns_played}**: ${narrationResult.commitDescription}${levelUp ? ' 🎉 LEVEL UP!' : ''}${isGameOver ? ' 💀 DEATH' : ''}`;
-    await appendChronicle(chronicleEntry);
-
-    // Step 5: GIT COMMIT
     const commitType = levelUp ? 'LEVEL_UP' : narrationResult.commitType;
     const commitDesc = levelUp
       ? `Reached Level ${player.level} ${player.class}! ${narrationResult.commitDescription}`
       : narrationResult.commitDescription;
 
-    await commitGameState(commitType, commitDesc);
+    if (!serverless) {
+      // Step 4b: WRITE STATE FILES
+      await writePlayerState(player);
+      await writeInventory(inventory);
+
+      // Append to chronicle
+      const chronicleEntry = `- **Turn ${player.turns_played}**: ${commitDesc}${isGameOver ? ' 💀 DEATH' : ''}`;
+      await appendChronicle(chronicleEntry);
+
+      // Step 5: GIT COMMIT
+      await commitGameState(commitType, commitDesc);
+    }
+
 
     // Build response
     const result: TurnResult = {

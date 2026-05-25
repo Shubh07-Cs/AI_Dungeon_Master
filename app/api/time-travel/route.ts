@@ -1,10 +1,19 @@
 import { NextResponse } from 'next/server';
 import { timeTravel } from '@/lib/git-manager';
-import { readPlayerState, readInventory } from '@/lib/game-engine';
+import { readPlayerState, readInventory, isServerless } from '@/lib/game-engine';
 
 export async function POST(request: Request) {
   try {
+    if (isServerless()) {
+      return NextResponse.json({
+        success: true,
+        message: 'Reality restored in client timeline',
+        isServerless: true,
+      });
+    }
+
     const { commitHash } = await request.json();
+
 
     if (!commitHash || typeof commitHash !== 'string') {
       return NextResponse.json(

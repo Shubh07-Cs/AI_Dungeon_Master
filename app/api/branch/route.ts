@@ -1,11 +1,20 @@
 import { NextResponse } from 'next/server';
 import { createBranch, listBranches, switchBranch, getCurrentBranch } from '@/lib/git-manager';
+import { isServerless } from '@/lib/game-engine';
 
 export async function GET() {
   try {
+    if (isServerless()) {
+      return NextResponse.json({
+        branches: [{ name: 'main', current: true }],
+        current: 'main',
+        isServerless: true,
+      });
+    }
+
     const branches = await listBranches();
     const current = await getCurrentBranch();
-    return NextResponse.json({ branches, current });
+    return NextResponse.json({ branches, current, isServerless: false });
   } catch (error) {
     console.error('Branch route error:', error);
     return NextResponse.json(
@@ -17,7 +26,16 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    if (isServerless()) {
+      return NextResponse.json({
+        success: true,
+        message: 'Reality branched in client timeline',
+        isServerless: true,
+      });
+    }
+
     const { action, branchName } = await request.json();
+
 
     if (!branchName || typeof branchName !== 'string') {
       return NextResponse.json(

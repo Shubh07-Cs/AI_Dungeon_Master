@@ -22,6 +22,7 @@ export default function GameDashboard() {
     isGameOver,
     submitAction,
     refreshState,
+    isServerless,
   } = useGameState();
 
   const {
@@ -38,6 +39,11 @@ export default function GameDashboard() {
   const [fullStoryLog, setFullStoryLog] = useState<typeof storyLog>([]);
 
   useEffect(() => {
+    if (isServerless) {
+      setInitialChronicleFetched(true);
+      return;
+    }
+
     // When the component mounts, we might want to fetch the initial chronicle
     const fetchInitialChronicle = async () => {
       try {
@@ -63,13 +69,15 @@ export default function GameDashboard() {
     if (!initialChronicleFetched) {
       fetchInitialChronicle();
     }
-  }, [initialChronicleFetched, fullStoryLog.length]);
+  }, [initialChronicleFetched, fullStoryLog.length, isServerless]);
 
   // Merge the initial prologue with the ongoing story log from actions
-  const displayedLog = [
-    ...fullStoryLog,
-    ...storyLog.filter(entry => !fullStoryLog.some(e => e.id === entry.id))
-  ];
+  const displayedLog = isServerless 
+    ? storyLog 
+    : [
+        ...fullStoryLog,
+        ...storyLog.filter(entry => !fullStoryLog.some(e => e.id === entry.id))
+      ];
 
   const handleAction = async (action: string) => {
     await submitAction(action);
@@ -81,6 +89,12 @@ export default function GameDashboard() {
     await timeTravel(hash);
     // After time travel, the game state changes
     await refreshState();
+    
+    if (isServerless) {
+      setFullStoryLog([]);
+      return;
+    }
+
     // Also reset the story log to just the current chronicle
     const res = await fetch('/api/state');
     if (res.ok) {
@@ -91,6 +105,7 @@ export default function GameDashboard() {
       }]);
     }
   };
+
 
   const isLoading = isGameStateLoading || isTimelineLoading;
 

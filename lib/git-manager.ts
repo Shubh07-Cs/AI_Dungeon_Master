@@ -168,3 +168,29 @@ export async function getCurrentBranch(): Promise<string> {
     return 'unknown';
   }
 }
+
+/**
+ * Auto-initialize play branch: if currently on 'main', auto-create/checkout 'chronicle' branch
+ */
+export async function autoInitializePlayBranch(): Promise<string> {
+  const current = await getCurrentBranch();
+  
+  if (current === 'main') {
+    const git = getGit();
+    try {
+      const branches = await git.branchLocal();
+      const hasChronicle = branches.all.includes('chronicle');
+      
+      if (!hasChronicle) {
+        await git.checkoutLocalBranch('chronicle');
+      } else {
+        await git.checkout('chronicle');
+      }
+      return 'chronicle';
+    } catch (err) {
+      console.error('Error auto-initializing play branch:', err);
+    }
+  }
+  return current;
+}
+
