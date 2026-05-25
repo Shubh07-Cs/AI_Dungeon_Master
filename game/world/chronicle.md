@@ -66,3 +66,4 @@ But the door is open. The Engine is watching. And the only way out of this story
 - **Turn 20**: Attacked Glitch-Wraith with Runic Vibro-Dagger, dealing 7 damage
 - **Turn 21**: Aelias successfully strikes the Glitch-Wraith, dealing significant damage. 🎉 LEVEL UP!
 - **Turn 22**: Failed to perceive details in Neon Crypts - Sector 7 Hidden Passage
+- **Turn 23**: CRITICAL FAILURE: Minor Elixir of Restoration shattered before use.
