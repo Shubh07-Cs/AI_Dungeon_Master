@@ -1,26 +1,458 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* ─── Color Palette: Dark Fantasy Cyberpunk ─── */
+  --color-void: #0a0a0f;
+  --color-void-light: #12121a;
+  --color-void-lighter: #1a1a2e;
+  --color-panel: rgba(15, 15, 25, 0.85);
+  --color-panel-hover: rgba(20, 20, 35, 0.95);
+  --color-border: rgba(139, 92, 246, 0.2);
+  --color-border-hover: rgba(139, 92, 246, 0.5);
+
+  --color-arcane: #8b5cf6;
+  --color-arcane-light: #a78bfa;
+  --color-arcane-dark: #6d28d9;
+  --color-arcane-glow: rgba(139, 92, 246, 0.3);
+
+  --color-cyber: #06b6d4;
+  --color-cyber-light: #22d3ee;
+  --color-cyber-dark: #0891b2;
+  --color-cyber-glow: rgba(6, 182, 212, 0.3);
+
+  --color-gold: #f59e0b;
+  --color-gold-light: #fbbf24;
+  --color-gold-dark: #d97706;
+  --color-gold-glow: rgba(245, 158, 11, 0.3);
+
+  --color-blood: #ef4444;
+  --color-blood-light: #f87171;
+  --color-blood-dark: #dc2626;
+  --color-blood-glow: rgba(239, 68, 68, 0.3);
+
+  --color-emerald: #10b981;
+  --color-emerald-light: #34d399;
+  --color-emerald-dark: #059669;
+  --color-emerald-glow: rgba(16, 185, 129, 0.3);
+
+  --color-silver: #e2e8f0;
+  --color-muted: #64748b;
+  --color-dim: #475569;
+
+  /* ─── Typography ─── */
+  --font-display: 'Cinzel', serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* ─── Animations ─── */
+  --animate-glow-pulse: glow-pulse 2s ease-in-out infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-shimmer: shimmer 3s linear infinite;
+  --animate-fade-in: fade-in 0.5s ease-out;
+  --animate-slide-up: slide-up 0.5s ease-out;
+  --animate-dice-roll: dice-roll 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --animate-particle: particle-drift 8s linear infinite;
+  --animate-typewriter-blink: typewriter-blink 0.8s step-end infinite;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ─── Keyframes ─── */
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.6; filter: brightness(1); }
+  50% { opacity: 1; filter: brightness(1.3); }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dice-roll {
+  0% { transform: rotate(0deg) scale(0.5); opacity: 0; }
+  50% { transform: rotate(720deg) scale(1.2); opacity: 1; }
+  100% { transform: rotate(1080deg) scale(1); opacity: 1; }
+}
+
+@keyframes particle-drift {
+  0% { transform: translateY(100vh) translateX(0) scale(0); opacity: 0; }
+  10% { opacity: 1; scale: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-10vh) translateX(100px) scale(0); opacity: 0; }
+}
+
+@keyframes typewriter-blink {
+  50% { border-color: transparent; }
+}
+
+@keyframes bar-fill {
+  from { width: 0%; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+@keyframes death-glitch {
+  0% { clip-path: inset(0 0 0 0); }
+  20% { clip-path: inset(20% 0 60% 0); }
+  40% { clip-path: inset(60% 0 10% 0); }
+  60% { clip-path: inset(40% 0 30% 0); }
+  80% { clip-path: inset(10% 0 70% 0); }
+  100% { clip-path: inset(0 0 0 0); }
+}
+
+/* ─── Base Styles ─── */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-void);
+  color: var(--color-silver);
+  font-family: var(--font-body);
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-void-light);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-arcane-dark);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-arcane);
+}
+
+/* ─── Glass Panel ─── */
+.glass-panel {
+  background: var(--color-panel);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-panel:hover {
+  border-color: var(--color-border-hover);
+}
+
+/* ─── Glowing Elements ─── */
+.glow-arcane {
+  box-shadow: 0 0 20px var(--color-arcane-glow), inset 0 0 20px rgba(139, 92, 246, 0.05);
+}
+
+.glow-cyber {
+  box-shadow: 0 0 20px var(--color-cyber-glow), inset 0 0 20px rgba(6, 182, 212, 0.05);
+}
+
+.glow-gold {
+  box-shadow: 0 0 15px var(--color-gold-glow);
+}
+
+.glow-blood {
+  box-shadow: 0 0 20px var(--color-blood-glow);
+}
+
+.glow-emerald {
+  box-shadow: 0 0 20px var(--color-emerald-glow);
+}
+
+/* ─── Text Glow ─── */
+.text-glow-arcane {
+  text-shadow: 0 0 10px var(--color-arcane-glow), 0 0 20px rgba(139, 92, 246, 0.2);
+}
+
+.text-glow-cyber {
+  text-shadow: 0 0 10px var(--color-cyber-glow), 0 0 20px rgba(6, 182, 212, 0.2);
+}
+
+.text-glow-gold {
+  text-shadow: 0 0 10px var(--color-gold-glow);
+}
+
+/* ─── Progress Bars ─── */
+.progress-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--color-void-lighter);
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.progress-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+.progress-hp {
+  background: linear-gradient(90deg, var(--color-blood), var(--color-gold), var(--color-emerald));
+  background-size: 200% 100%;
+}
+
+.progress-xp {
+  background: linear-gradient(90deg, var(--color-arcane-dark), var(--color-arcane), var(--color-arcane-light));
+}
+
+.progress-mana {
+  background: linear-gradient(90deg, var(--color-cyber-dark), var(--color-cyber), var(--color-cyber-light));
+}
+
+/* ─── Particles ─── */
+.particle {
+  position: fixed;
+  pointer-events: none;
+  border-radius: 50%;
+  animation: particle-drift var(--duration, 8s) linear infinite;
+  animation-delay: var(--delay, 0s);
+  left: var(--x, 50%);
+  width: var(--size, 3px);
+  height: var(--size, 3px);
+  z-index: 0;
+}
+
+/* ─── Input Styles ─── */
+.game-input {
+  background: var(--color-void-lighter);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-silver);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  padding: 12px 16px;
+  width: 100%;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  outline: none;
+}
+
+.game-input:focus {
+  border-color: var(--color-arcane);
+  box-shadow: 0 0 20px var(--color-arcane-glow), 0 0 40px rgba(139, 92, 246, 0.1);
+}
+
+.game-input::placeholder {
+  color: var(--color-dim);
+}
+
+/* ─── Buttons ─── */
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-void-lighter);
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-action:hover {
+  color: var(--color-silver);
+  border-color: var(--color-border-hover);
+  background: var(--color-panel-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn-action:active {
+  transform: translateY(0);
+}
+
+.btn-primary {
+  border-color: var(--color-arcane-dark);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(6, 182, 212, 0.1));
+  color: var(--color-arcane-light);
+}
+
+.btn-primary:hover {
+  border-color: var(--color-arcane);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(6, 182, 212, 0.2));
+  box-shadow: 0 0 20px var(--color-arcane-glow);
+}
+
+.btn-danger {
+  border-color: var(--color-blood-dark);
+  color: var(--color-blood-light);
+}
+
+.btn-danger:hover {
+  border-color: var(--color-blood);
+  box-shadow: 0 0 20px var(--color-blood-glow);
+}
+
+/* ─── Timeline ─── */
+.timeline-node {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.timeline-node::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.timeline-node:hover::after {
+  opacity: 0.4;
+}
+
+.timeline-node.current {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.timeline-connector {
+  height: 2px;
+  width: 32px;
+  flex-shrink: 0;
+}
+
+/* ─── Item Cards ─── */
+.item-card {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-void-lighter);
+  transition: all 0.2s ease;
+  cursor: default;
+}
+
+.item-card:hover {
+  border-color: var(--color-border-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* ─── Dice Animation ─── */
+.dice-container {
+  perspective: 1000px;
+}
+
+.dice-face {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.dice-rolling {
+  animation: dice-roll 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ─── Game Over ─── */
+.game-over-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.glitch-text {
+  animation: death-glitch 0.5s infinite;
+}
+
+/* ─── Responsive Layout ─── */
+.game-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1.5fr 1.2fr;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 16px;
+  height: calc(100vh - 76px);
+  padding: 16px 24px;
+}
+
+.game-grid > *:nth-child(4) {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 1200px) {
+  .game-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .game-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    height: auto;
+    overflow-y: auto;
+  }
+  body {
+    overflow: auto;
+  }
 }
