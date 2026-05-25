@@ -1,6 +1,7 @@
 'use client';
 
-import { motion } from 'motion/react';
+import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Dices } from 'lucide-react';
 
 interface DiceRollResult {
@@ -62,101 +63,133 @@ function getDiceStyle(result: DiceRollResult) {
 }
 
 export default function DiceRoller({ diceRoll, isRolling }: DiceRollerProps) {
-  // Rolling state — animated spinner
-  if (isRolling) {
-    return (
-      <div className="flex flex-col items-center gap-2 py-3">
-        <motion.div
-          className="dice-face dice-rolling border border-[var(--color-arcane)] bg-[var(--color-arcane)]/15"
-          animate={{ rotate: [0, 360], scale: [1, 1.15, 1] }}
-          transition={{
-            rotate: { duration: 0.6, repeat: Infinity, ease: 'linear' },
-            scale: { duration: 0.6, repeat: Infinity, ease: 'easeInOut' },
-          }}
-        >
-          <Dices size={22} className="text-[var(--color-arcane-light)]" />
-        </motion.div>
-        <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--color-arcane-light)] animate-[glow-pulse_1.5s_ease-in-out_infinite]">
-          Rolling...
-        </span>
-      </div>
-    );
-  }
+  const [showOverlay, setShowOverlay] = useState(false);
 
-  // No result yet — idle state
-  if (!diceRoll) {
-    return (
-      <div className="flex flex-col items-center gap-2 py-3">
-        <div className="dice-face border border-[var(--color-border)] bg-[var(--color-void-lighter)]">
-          <Dices size={20} className="text-[var(--color-dim)]" />
-        </div>
-        <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--color-dim)]">
-          d20
-        </span>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (isRolling) {
+      setShowOverlay(true);
+    } else if (diceRoll && showOverlay) {
+      // Keep it up for 2.5s after roll finishes to show result
+      const timer = setTimeout(() => setShowOverlay(false), 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [isRolling, diceRoll, showOverlay]);
 
-  // Result display
-  const style = getDiceStyle(diceRoll);
+  const style = diceRoll ? getDiceStyle(diceRoll) : null;
 
   return (
-    <motion.div
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 18 }}
-      className="flex flex-col items-center gap-2 py-3"
-    >
-      {/* Dice face */}
-      <div className={`dice-face border ${style.border} ${style.bg} ${style.glow}`}>
-        <span className={`${style.text} font-display font-bold`}>
-          {diceRoll.roll}
-        </span>
-      </div>
-
-      {/* Critical / result label */}
-      <motion.span
-        initial={{ opacity: 0, y: 4 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.15 }}
-        className={`text-[10px] font-mono uppercase tracking-widest font-bold ${style.labelColor}`}
-      >
-        {style.label}
-      </motion.span>
-
-      {/* Breakdown */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.25 }}
-        className="flex items-center gap-1 text-[11px] font-mono text-[var(--color-muted)]"
-      >
-        <span className="text-[var(--color-silver)]">{diceRoll.roll}</span>
-        {diceRoll.modifier !== 0 && (
-          <>
-            <span className="text-[var(--color-dim)]">
-              {diceRoll.modifier > 0 ? '+' : '−'}
-            </span>
-            <span className="text-[var(--color-silver)]">
-              {Math.abs(diceRoll.modifier)}
-            </span>
-          </>
+    <>
+      {/* ─── Massive 3D Overlay ─── */}
+      <AnimatePresence>
+        {showOverlay && (
+          <motion.div
+            className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none bg-[var(--color-void)]/60 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            {isRolling ? (
+              <div className="flex flex-col items-center gap-6">
+                <motion.div
+                  className="w-32 h-32 flex items-center justify-center rounded-xl border-4 border-[var(--color-arcane)] bg-[var(--color-arcane)]/20 shadow-[0_0_50px_var(--color-arcane-glow)]"
+                  animate={{
+                    rotateX: [0, 720, 1440],
+                    rotateY: [0, 1080, 2160],
+                    rotateZ: [0, 360, 720],
+                    scale: [1, 1.2, 1],
+                  }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
+                  style={{ transformStyle: 'preserve-3d' }}
+                >
+                  <Dices size={64} className="text-[var(--color-arcane-light)]" />
+                </motion.div>
+                <motion.span
+                  className="text-2xl font-display font-bold text-glow-arcane text-[var(--color-arcane-light)] tracking-widest"
+                  animate={{ opacity: [0.4, 1, 0.4] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                >
+                  ROLLING FATE...
+                </motion.span>
+              </div>
+            ) : diceRoll && style ? (
+              <motion.div
+                className="flex flex-col items-center gap-6"
+                initial={{ scale: 0.5, opacity: 0, rotateY: -180 }}
+                animate={{ scale: 1, opacity: 1, rotateY: 0 }}
+                exit={{ scale: 1.5, opacity: 0, filter: 'blur(10px)' }}
+                transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+              >
+                <div className={`w-32 h-32 flex items-center justify-center rounded-xl border-4 ${style.border} ${style.bg} ${style.glow} shadow-[0_0_100px_var(--color-arcane-glow)]`}>
+                  <span className={`${style.text} font-display font-black text-6xl drop-shadow-2xl`}>
+                    {diceRoll.roll}
+                  </span>
+                </div>
+                
+                <div className="flex flex-col items-center gap-2 bg-[var(--color-void)]/90 p-4 rounded-xl border border-[var(--color-border)] backdrop-blur-md">
+                  <span className={`text-2xl font-display uppercase tracking-widest font-black ${style.labelColor} drop-shadow-lg`}>
+                    {style.label}
+                  </span>
+                  
+                  <div className="flex items-center gap-3 text-lg font-mono text-[var(--color-muted)]">
+                    <span className="text-[var(--color-silver)] font-bold">{diceRoll.roll}</span>
+                    {diceRoll.modifier !== 0 && (
+                      <>
+                        <span className="text-[var(--color-dim)]">{diceRoll.modifier > 0 ? '+' : '−'}</span>
+                        <span className="text-[var(--color-silver)] font-bold">{Math.abs(diceRoll.modifier)}</span>
+                      </>
+                    )}
+                    <span className="text-[var(--color-dim)]">=</span>
+                    <span className={`font-black text-xl ${style.text}`}>{diceRoll.total}</span>
+                    <span className="text-[var(--color-dim)] mx-2">vs</span>
+                    <span className="text-[var(--color-silver)] font-bold">DC {diceRoll.dc}</span>
+                  </div>
+                  
+                  <span className="px-3 py-1 mt-1 rounded bg-[var(--color-arcane)]/20 border border-[var(--color-arcane)]/40 text-sm text-[var(--color-arcane-light)] font-mono uppercase tracking-widest font-bold">
+                    {diceRoll.statUsed} CHECK
+                  </span>
+                </div>
+              </motion.div>
+            ) : null}
+          </motion.div>
         )}
-        <span className="text-[var(--color-dim)]">=</span>
-        <span className={`font-bold ${style.text}`}>{diceRoll.total}</span>
-        <span className="text-[var(--color-dim)] mx-0.5">vs</span>
-        <span className="text-[var(--color-silver)]">DC {diceRoll.dc}</span>
-      </motion.div>
+      </AnimatePresence>
 
-      {/* Stat used badge */}
-      <motion.span
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.35 }}
-        className="px-2 py-0.5 rounded bg-[var(--color-arcane)]/15 border border-[var(--color-arcane)]/25 text-[10px] text-[var(--color-arcane-light)] font-mono uppercase tracking-wider"
-      >
-        {diceRoll.statUsed}
-      </motion.span>
-    </motion.div>
+      {/* ─── Mini Header Dice ─── */}
+      {/* ─── Mini Header Dice ─── */}
+      <div className="flex items-center">
+        {isRolling ? (
+          <div className="flex items-center justify-center opacity-50 px-2 py-1">
+            <Dices size={20} className="text-[var(--color-arcane)] animate-spin" />
+          </div>
+        ) : !diceRoll ? (
+          <div className="flex items-center text-[var(--color-dim)] px-2 py-1">
+            <Dices size={20} />
+          </div>
+        ) : (
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 18 }}
+            className="flex items-center gap-2"
+          >
+            {/* Dice face */}
+            <div className={`dice-face w-8 h-8 text-sm border ${style?.border} ${style?.bg} ${style?.glow}`}>
+              <span className={`${style?.text} font-display font-bold`}>
+                {diceRoll.roll}
+              </span>
+            </div>
+
+            <div className="flex flex-col items-start leading-none">
+              <span className={`text-[9px] font-mono uppercase tracking-widest font-bold ${style?.labelColor}`}>
+                {style?.label}
+              </span>
+              <span className="text-[9px] font-mono text-[var(--color-muted)]">
+                {diceRoll.statUsed}
+              </span>
+            </div>
+          </motion.div>
+        )}
+      </div>
+    </>
   );
 }

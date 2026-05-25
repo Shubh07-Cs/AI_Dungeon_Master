@@ -30,6 +30,8 @@ export interface PlayerState {
   current_location: string;
   alignment: string;
   abilities: string[];
+  quests: any[];
+  memory_fragments: string[];
   kill_count: number;
   turns_played: number;
 }
@@ -74,7 +76,9 @@ export interface DiceRoll {
 }
 
 export interface TurnResult {
-  narration: string;
+  immersiveLore: string;
+  tacticalSummary: string;
+  engineAlert: string | null;
   mechanics: {
     diceRoll: DiceRoll | null;
     hpChange: number;
@@ -89,6 +93,9 @@ export interface TurnResult {
     commitType: string;
     commitDescription: string;
     levelUp: boolean;
+    threatDetected: string | null;
+    objective: string | null;
+    memoryFragmentUnlocked: string | null;
   };
   playerState: PlayerState;
   inventory: InventoryState;

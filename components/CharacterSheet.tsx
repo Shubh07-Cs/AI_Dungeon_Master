@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'motion/react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Shield,
   Heart,
@@ -110,6 +111,61 @@ function Skeleton() {
   );
 }
 
+/* ── Animated Bar Component ───────────────────────────── */
+function AnimatedBar({
+  current,
+  max,
+  barClass,
+  flashColorDown,
+  flashColorUp,
+}: {
+  current: number;
+  max: number;
+  barClass: string;
+  flashColorDown: string;
+  flashColorUp: string;
+}) {
+  const pct = Math.max(0, Math.min((current / max) * 100, 100));
+  const [flash, setFlash] = useState<string | null>(null);
+  const prevCurrent = useRef(current);
+
+  useEffect(() => {
+    if (current < prevCurrent.current) {
+      setFlash(flashColorDown);
+      const t = setTimeout(() => setFlash(null), 300);
+      prevCurrent.current = current;
+      return () => clearTimeout(t);
+    } else if (current > prevCurrent.current) {
+      setFlash(flashColorUp);
+      const t = setTimeout(() => setFlash(null), 300);
+      prevCurrent.current = current;
+      return () => clearTimeout(t);
+    }
+  }, [current, flashColorDown, flashColorUp]);
+
+  return (
+    <div className="progress-bar relative overflow-hidden">
+      <AnimatePresence>
+        {flash && (
+          <motion.div
+            className={`absolute inset-0 z-10 ${flash}`}
+            initial={{ opacity: 0.8 }}
+            animate={{ opacity: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          />
+        )}
+      </AnimatePresence>
+      <motion.div
+        className={barClass}
+        initial={{ width: `${pct}%` }}
+        animate={{ width: `${pct}%` }}
+        transition={{ type: 'spring', bounce: 0.25, duration: 0.8 }}
+      />
+    </div>
+  );
+}
+
 /* ── Main Component ───────────────────────────────────── */
 export default function CharacterSheet({ player }: CharacterSheetProps) {
   if (!player) return <Skeleton />;
@@ -157,56 +213,53 @@ export default function CharacterSheet({ player }: CharacterSheetProps) {
               {player.health.current}/{player.health.max}
             </span>
           </div>
-          <div className="progress-bar">
-            <motion.div
-              className={hpBarClass(player.health.current, player.health.max)}
-              initial={{ width: 0 }}
-              animate={{ width: `${healthPct}%` }}
-              transition={{ duration: 0.8, ease: 'easeOut' }}
-            />
-          </div>
+          <AnimatedBar
+            current={player.health.current}
+            max={player.health.max}
+            barClass={hpBarClass(player.health.current, player.health.max)}
+            flashColorDown="bg-[var(--color-blood-glow)]"
+            flashColorUp="bg-[var(--color-emerald-glow)]"
+          />
         </div>
 
         {/* Mana */}
         <div>
           <div className="flex items-center justify-between mb-0.5">
             <div className="flex items-center gap-1">
-              <Zap className="w-3.5 h-3.5 text-[var(--color-cyber)]" />
-              <span className="text-xs font-mono text-[var(--color-muted)]">MP</span>
+               <Zap className="w-3.5 h-3.5 text-[var(--color-cyber)]" />
+               <span className="text-xs font-mono text-[var(--color-muted)]">MP</span>
             </div>
             <span className="text-xs font-mono font-semibold text-[var(--color-cyber-light)]">
-              {player.mana.current}/{player.mana.max}
+               {player.mana.current}/{player.mana.max}
             </span>
           </div>
-          <div className="progress-bar">
-            <motion.div
-              className="progress-bar-fill progress-mana"
-              initial={{ width: 0 }}
-              animate={{ width: `${manaPct}%` }}
-              transition={{ duration: 0.8, ease: 'easeOut' }}
-            />
-          </div>
+          <AnimatedBar
+            current={player.mana.current}
+            max={player.mana.max}
+            barClass="progress-bar-fill progress-mana"
+            flashColorDown="bg-[var(--color-cyber-glow)]"
+            flashColorUp="bg-[var(--color-cyber-glow)]"
+          />
         </div>
 
         {/* XP */}
         <div>
           <div className="flex items-center justify-between mb-0.5">
-            <div className="flex items-center gap-1">
-              <Star className="w-3.5 h-3.5 text-[var(--color-arcane)]" />
-              <span className="text-xs font-mono text-[var(--color-muted)]">XP</span>
-            </div>
-            <span className="text-xs font-mono font-semibold text-[var(--color-arcane-light)]">
-              {player.experience.current}/{player.experience.next_level}
-            </span>
+             <div className="flex items-center gap-1">
+               <Star className="w-3.5 h-3.5 text-[var(--color-arcane)]" />
+               <span className="text-xs font-mono text-[var(--color-muted)]">XP</span>
+             </div>
+             <span className="text-xs font-mono font-semibold text-[var(--color-arcane-light)]">
+               {player.experience.current}/{player.experience.next_level}
+             </span>
           </div>
-          <div className="progress-bar">
-            <motion.div
-              className="progress-bar-fill progress-xp"
-              initial={{ width: 0 }}
-              animate={{ width: `${xpPct}%` }}
-              transition={{ duration: 0.8, ease: 'easeOut' }}
-            />
-          </div>
+          <AnimatedBar
+            current={player.experience.current}
+            max={player.experience.next_level}
+            barClass="progress-bar-fill progress-xp"
+            flashColorDown="bg-[var(--color-muted)]"
+            flashColorUp="bg-[var(--color-gold-glow)]"
+          />
         </div>
       </div>
 
