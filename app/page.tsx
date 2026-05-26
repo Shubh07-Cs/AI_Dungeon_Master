@@ -121,7 +121,9 @@ export default function GameDashboard() {
       const data = await res.json();
       setFullStoryLog([{
         id: `restored-${hash}`,
-        narration: data.chronicle,
+        immersiveLore: data.chronicle,
+        tacticalSummary: 'Reality anchor restored',
+        engineAlert: `> Temporal shift to anchor ${hash.substring(0, 7)} complete.`
       }]);
     }
   };
@@ -164,7 +166,19 @@ export default function GameDashboard() {
       <main className="relative z-10 game-grid w-full">
         <div className="flex flex-col h-full min-h-0">
           <StoryLog 
-            entries={displayedLog} 
+            entries={displayedLog.map(entry => ({
+              id: entry.id,
+              immersiveLore: entry.immersiveLore,
+              tacticalSummary: entry.tacticalSummary,
+              engineAlert: entry.engineAlert,
+              mechanics: entry.mechanics ? {
+                diceRoll: entry.mechanics.diceRoll || undefined,
+                commitType: entry.mechanics.commitType,
+                commitDescription: entry.mechanics.commitDescription,
+                threatDetected: entry.mechanics.threatDetected || undefined,
+                objective: entry.mechanics.objective || undefined
+              } : undefined
+            }))} 
             uiMode={uiMode}
             onToggleUiMode={() => setUiMode(uiMode === 'tactical' ? 'immersive' : 'tactical')}
           />
