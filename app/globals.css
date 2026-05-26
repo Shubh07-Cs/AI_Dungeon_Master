@@ -146,12 +146,9 @@
 }
 
 @keyframes crt-flicker {
-  0% { opacity: 0.03; }
-  5% { opacity: 0.05; }
-  10% { opacity: 0.02; }
-  15% { opacity: 0.08; }
-  20% { opacity: 0.03; }
-  100% { opacity: 0.03; }
+  0% { opacity: 0.012; }
+  50% { opacity: 0.022; }
+  100% { opacity: 0.012; }
 }
 
 
@@ -182,11 +179,16 @@ body {
     rgba(0, 0, 0, 0.25)
   );
   background-size: 100% 4px;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 
 .crt-flicker {
   background: #fff;
-  animation: crt-flicker 0.15s infinite;
+  animation: crt-flicker 8s ease-in-out infinite;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  will-change: opacity;
 }
 
 /* ─── Location Gradients ─── */
@@ -229,6 +231,9 @@ body {
   border: 1px solid var(--color-border);
   border-radius: 12px;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  will-change: transform, border-color, box-shadow;
 }
 
 .glass-panel:hover {
@@ -326,6 +331,9 @@ body {
   width: var(--size, 3px);
   height: var(--size, 3px);
   z-index: 0;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  will-change: transform;
 }
 
 /* ─── Input Styles ─── */
